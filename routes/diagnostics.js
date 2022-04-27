@@ -2,6 +2,7 @@ const diagnostics = require('express').Router();
 const fs = require('fs')
 const { v4: uuidv4 } = require('uuid');
 const { readAndAppend, readFromFile } = require('../helpers/fsUtils');
+const moment = require('moment');
 
 // GET Route for retrieving diagnostic information
 diagnostics.get('/', (req, res) => {
@@ -24,8 +25,15 @@ diagnostics.post('/', (req, res) => {
     if (err) {
       throw err
     } else {
-      const diagnosticsdata = JSON.parse(data);
-      diagnosticsdata.push(req.body);
+      let diagnosticsdata = JSON.parse(data);
+      const newError = {
+        "time": moment().valueOf(),
+        "error_id": uuidv4(),
+        "errors": req.body.errors,
+      };
+
+      // if (!req.body.isValid) do this
+      diagnosticsdata.push(newError);
       fs.writeFile("./db/diagnostics.json", JSON.stringify(diagnosticsdata,null, 2), (err, data) => {
         if (err) {
           throw err
@@ -33,7 +41,6 @@ diagnostics.post('/', (req, res) => {
           res.json(diagnosticsdata)
         }
       })
-      res.json(diagnosticsdata)
     }
   })
 });

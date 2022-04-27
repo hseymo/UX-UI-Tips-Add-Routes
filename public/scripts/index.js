@@ -130,18 +130,10 @@ const submitDiagnostics = (submissionObj) => {
     headers: {
       "Content-Type": "application/json"
     }
-  }).then(res => {res.json()}
-  ).then(res => {
-    console.log(res)
-    console.log(submissionObj)
-    showErrors(submissionObj.errors);
-  }).catch(err => console.log(err)
-  )
-
-  console.info(
-    '⚠️ Create the logic for the fetch POST request in scripts/index.js'
-  );
-  alert('Add your logic to scripts/index.js');
+  })
+  .then(res => res.json())
+  .then(() => showErrors(submissionObj.errors))
+  .catch(err => console.log(err))
 };
 
 // Function to handle when a user submits the feedback form
